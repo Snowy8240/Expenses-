@@ -49,39 +49,88 @@
   ::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 4px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--blue-vivid); }
 
-  /* HEADER */
+  /* ── HEADER — centred hero layout ── */
   header {
-    background: rgba(255,255,255,0.95);
+    background: rgba(255,255,255,0.97);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--blue-line);
-    padding: 0 2rem;
-    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 1.8rem 0.85rem;
     position: sticky; top: 0; z-index: 100;
     box-shadow: 0 1px 0 rgba(249,115,22,0.1), 0 4px 20px rgba(0,0,0,0.06);
+    display: flex; flex-direction: column; align-items: center; gap: 0;
   }
-  .header-brand { display: flex; align-items: center; gap: 0.9rem; padding: 1rem 0; }
+
+  /* Top utility row — logo left, year selector right */
+  .header-util {
+    width: 100%; display: flex; align-items: center;
+    justify-content: space-between; margin-bottom: 0.6rem;
+  }
   .header-logo {
-    width: 38px; height: 38px;
+    width: 34px; height: 34px; flex-shrink: 0;
     background: linear-gradient(135deg, var(--blue-vivid), var(--cyan));
     border-radius: 10px;
     display: flex; align-items: center; justify-content: center;
     font-size: 1.1rem;
-    box-shadow: var(--glow-blue);
+    box-shadow: 0 0 16px rgba(249,115,22,0.28);
   }
-  .brand-text h1 {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 1.2rem; font-weight: 600;
-    color: var(--text-main); letter-spacing: -0.01em;
-  }
-  .brand-text h1 span { color: var(--blue-bright); }
-  .brand-sub { font-size: 0.62rem; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.12em; }
   .year-sel {
     background: var(--bg-raised); border: 1px solid var(--blue-line);
-    color: var(--blue-glow); padding: 0.4rem 0.7rem;
-    border-radius: 8px; font-family: 'Outfit', sans-serif; font-size: 0.82rem;
+    color: var(--blue-glow); padding: 0.38rem 0.65rem;
+    border-radius: 8px; font-family: 'Outfit', sans-serif; font-size: 0.8rem;
     cursor: pointer; outline: none;
   }
   .year-sel option { background: var(--bg-dark); }
+
+  /* Centre hero block */
+  .header-center {
+    display: flex; flex-direction: column; align-items: center; gap: 0.18rem;
+    width: 100%; text-align: center;
+  }
+  .hc-username {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.55rem; font-weight: 700; line-height: 1.15;
+    background: linear-gradient(135deg, var(--blue-vivid) 0%, #7c3aed 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text; letter-spacing: -0.02em;
+  }
+  .hc-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.68rem; font-weight: 500; color: var(--text-soft);
+    text-transform: uppercase; letter-spacing: 0.2em; line-height: 1;
+  }
+
+  /* Email + signout pill */
+  .hc-user-row {
+    display: flex; align-items: center; gap: 0.45rem;
+    margin-top: 0.5rem;
+    background: linear-gradient(135deg,#fff7ed,#fdf4ff);
+    border: 1px solid rgba(249,115,22,0.2);
+    border-radius: 40px; padding: 0.3rem 0.55rem 0.3rem 0.35rem;
+    box-shadow: 0 2px 10px rgba(249,115,22,0.1), 0 0 0 1px rgba(124,58,237,0.06);
+  }
+  .user-avatar {
+    width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+    background: linear-gradient(135deg, var(--blue-vivid), #7c3aed);
+    color: #fff; font-size: 0.72rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 8px rgba(249,115,22,0.35);
+  }
+  .user-email {
+    font-size: 0.73rem; color: var(--text-mid); font-weight: 500;
+    max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .user-divider {
+    width: 1px; height: 14px; background: rgba(0,0,0,0.1); flex-shrink: 0;
+  }
+  .logout-btn {
+    background: linear-gradient(135deg,#fee2e2,#fecaca);
+    border: 1px solid #fca5a5; color: var(--red);
+    font-size: 0.68rem; font-weight: 700; font-family: 'Outfit', sans-serif;
+    padding: 0.24rem 0.65rem; border-radius: 20px; cursor: pointer;
+    transition: all 0.18s; white-space: nowrap;
+    display: flex; align-items: center; gap: 0.25rem;
+  }
+  .logout-btn:hover { background: var(--red); color: #fff; border-color: var(--red); transform: scale(1.04); }
 
   /* LAYOUT */
   .app { max-width: 1440px; margin: 0 auto; padding: 1.8rem 1.5rem; display: grid; grid-template-columns: 340px 1fr; gap: 1.4rem; }
@@ -578,20 +627,22 @@
 </div>
 
 <header>
-  <div class="header-brand">
+  <!-- Utility row: logo left, year right -->
+  <div class="header-util">
     <div class="header-logo">💸</div>
-    <div class="brand-text">
-      <h1><span id="headerName">Susmita's</span> Expense Tracker</h1>
-      <div class="brand-sub">Daily Financial Diary</div>
-    </div>
+    <select class="year-sel" id="yearSel"></select>
   </div>
-  <div class="header-right">
-    <div class="user-pill" id="userPill" style="display:none">
+
+  <!-- Hero centre block: username → title → email+signout -->
+  <div class="header-center">
+    <div class="hc-username" id="headerName">Welcome</div>
+    <div class="hc-title">Daily Financial Tracker</div>
+    <div class="hc-user-row" id="userPill" style="display:none">
       <div class="user-avatar" id="userAvatar">?</div>
       <span class="user-email" id="userEmailDisplay"></span>
-      <button class="logout-btn" onclick="authLogout()">Sign out</button>
+      <div class="user-divider"></div>
+      <button class="logout-btn" onclick="authLogout()">⏏ Sign out</button>
     </div>
-    <select class="year-sel" id="yearSel"></select>
   </div>
 </header>
 
@@ -1564,7 +1615,7 @@ init();
     if (user) {
       document.getElementById('authScreen').classList.add('hidden');
       const displayName = user.displayName || user.email.split('@')[0];
-      document.getElementById('headerName').textContent = displayName + "'s";
+      document.getElementById('headerName').textContent = displayName;
       document.getElementById('userEmailDisplay').textContent = user.email;
       document.getElementById('userAvatar').textContent = displayName.charAt(0).toUpperCase();
       document.getElementById('userPill').style.display = 'flex';
