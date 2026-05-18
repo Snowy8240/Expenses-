@@ -49,86 +49,118 @@
   ::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 4px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--blue-vivid); }
 
-  /* ── HEADER — centred hero layout ── */
+  /* ── HEADER — scroll-reactive centred layout ── */
+  @keyframes headerSlideDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes shimmer { 0%{background-position:200% center} 100%{background-position:-200% center} }
+
   header {
     background: rgba(255,255,255,0.97);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--blue-line);
-    padding: 1rem 1.8rem 0.85rem;
+    padding: 0.85rem 1.8rem 0.8rem;
     position: sticky; top: 0; z-index: 100;
-    box-shadow: 0 1px 0 rgba(249,115,22,0.1), 0 4px 20px rgba(0,0,0,0.06);
-    display: flex; flex-direction: column; align-items: center; gap: 0;
+    box-shadow: 0 1px 0 rgba(249,115,22,0.08), 0 4px 20px rgba(0,0,0,0.06);
+    display: flex; flex-direction: column; align-items: center;
+    transition: padding 0.32s ease, box-shadow 0.32s ease;
+    animation: headerSlideDown 0.4s ease;
+    will-change: padding;
   }
 
-  /* Top utility row — logo left, year selector right */
+  /* ── SCROLLED state — slim single row ── */
+  header.scrolled {
+    padding: 0.45rem 1.8rem;
+    box-shadow: 0 2px 24px rgba(0,0,0,0.1), 0 1px 0 rgba(249,115,22,0.12);
+    flex-direction: row; justify-content: space-between; gap: 1rem;
+  }
+  header.scrolled .header-util  { display: none; }
+  header.scrolled .header-center { flex-direction: row; justify-content: space-between; width: 100%; align-items: center; gap: 0.75rem; }
+  header.scrolled .hc-username  { font-size: 1rem; }
+  header.scrolled .hc-title     { display: none; }
+  header.scrolled .hc-user-row  { margin-top: 0; }
+
+  /* Utility row */
   .header-util {
     width: 100%; display: flex; align-items: center;
-    justify-content: space-between; margin-bottom: 0.6rem;
+    justify-content: space-between; margin-bottom: 0.55rem;
+    transition: all 0.28s ease;
   }
   .header-logo {
-    width: 34px; height: 34px; flex-shrink: 0;
+    width: 32px; height: 32px; flex-shrink: 0;
     background: linear-gradient(135deg, var(--blue-vivid), var(--cyan));
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.1rem;
-    box-shadow: 0 0 16px rgba(249,115,22,0.28);
+    border-radius: 9px; display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; box-shadow: 0 0 14px rgba(249,115,22,0.28);
   }
   .year-sel {
     background: var(--bg-raised); border: 1px solid var(--blue-line);
-    color: var(--blue-glow); padding: 0.38rem 0.65rem;
-    border-radius: 8px; font-family: 'Outfit', sans-serif; font-size: 0.8rem;
+    color: var(--blue-glow); padding: 0.34rem 0.6rem;
+    border-radius: 8px; font-family: 'Outfit', sans-serif; font-size: 0.78rem;
     cursor: pointer; outline: none;
   }
   .year-sel option { background: var(--bg-dark); }
 
-  /* Centre hero block */
+  /* Hero centre */
   .header-center {
-    display: flex; flex-direction: column; align-items: center; gap: 0.18rem;
+    display: flex; flex-direction: column; align-items: center; gap: 0.16rem;
     width: 100%; text-align: center;
+    transition: all 0.28s ease;
   }
   .hc-username {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 1.55rem; font-weight: 700; line-height: 1.15;
-    background: linear-gradient(135deg, var(--blue-vivid) 0%, #7c3aed 100%);
+    font-size: 1.5rem; font-weight: 700; line-height: 1.15;
+    background: linear-gradient(270deg, var(--blue-vivid), #7c3aed, #f97316, #7c3aed);
+    background-size: 400% auto;
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     background-clip: text; letter-spacing: -0.02em;
+    animation: shimmer 6s linear infinite;
   }
   .hc-title {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 0.68rem; font-weight: 500; color: var(--text-soft);
-    text-transform: uppercase; letter-spacing: 0.2em; line-height: 1;
+    font-size: 0.65rem; font-weight: 500; color: var(--text-soft);
+    text-transform: uppercase; letter-spacing: 0.22em; line-height: 1;
+    transition: opacity 0.2s, max-height 0.28s;
   }
 
   /* Email + signout pill */
   .hc-user-row {
-    display: flex; align-items: center; gap: 0.45rem;
-    margin-top: 0.5rem;
+    display: flex; align-items: center; gap: 0.4rem;
+    margin-top: 0.48rem;
     background: linear-gradient(135deg,#fff7ed,#fdf4ff);
-    border: 1px solid rgba(249,115,22,0.2);
-    border-radius: 40px; padding: 0.3rem 0.55rem 0.3rem 0.35rem;
-    box-shadow: 0 2px 10px rgba(249,115,22,0.1), 0 0 0 1px rgba(124,58,237,0.06);
+    border: 1px solid rgba(249,115,22,0.22);
+    border-radius: 40px; padding: 0.28rem 0.52rem 0.28rem 0.32rem;
+    box-shadow: 0 2px 10px rgba(249,115,22,0.1), 0 0 0 1px rgba(124,58,237,0.05);
+    transition: margin-top 0.28s ease;
   }
   .user-avatar {
-    width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+    width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
     background: linear-gradient(135deg, var(--blue-vivid), #7c3aed);
-    color: #fff; font-size: 0.72rem; font-weight: 700;
+    color: #fff; font-size: 0.68rem; font-weight: 700;
     display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 0 8px rgba(249,115,22,0.35);
+    box-shadow: 0 0 8px rgba(249,115,22,0.32);
   }
+
+  /* Email mask */
+  .email-wrap { display: flex; align-items: center; gap: 0.3rem; }
   .user-email {
-    font-size: 0.73rem; color: var(--text-mid); font-weight: 500;
-    max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    font-size: 0.71rem; color: var(--text-mid); font-weight: 500;
+    max-width: 190px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    font-family: 'Space Grotesk', sans-serif;
+    transition: all 0.2s;
   }
-  .user-divider {
-    width: 1px; height: 14px; background: rgba(0,0,0,0.1); flex-shrink: 0;
+  .eye-btn {
+    background: none; border: none; cursor: pointer; padding: 0.1rem 0.2rem;
+    font-size: 0.75rem; color: var(--text-soft); border-radius: 4px;
+    transition: all 0.15s; flex-shrink: 0; line-height: 1;
   }
+  .eye-btn:hover { color: var(--blue-glow); background: rgba(249,115,22,0.1); }
+
+  .user-divider { width:1px; height:13px; background:rgba(0,0,0,0.1); flex-shrink:0; }
   .logout-btn {
     background: linear-gradient(135deg,#fee2e2,#fecaca);
     border: 1px solid #fca5a5; color: var(--red);
-    font-size: 0.68rem; font-weight: 700; font-family: 'Outfit', sans-serif;
-    padding: 0.24rem 0.65rem; border-radius: 20px; cursor: pointer;
+    font-size: 0.67rem; font-weight: 700; font-family: 'Outfit', sans-serif;
+    padding: 0.22rem 0.6rem; border-radius: 20px; cursor: pointer;
     transition: all 0.18s; white-space: nowrap;
-    display: flex; align-items: center; gap: 0.25rem;
+    display: flex; align-items: center; gap: 0.22rem;
   }
   .logout-btn:hover { background: var(--red); color: #fff; border-color: var(--red); transform: scale(1.04); }
 
@@ -626,20 +658,23 @@
   </div>
 </div>
 
-<header>
+<header id="siteHeader">
   <!-- Utility row: logo left, year right -->
   <div class="header-util">
     <div class="header-logo">💸</div>
     <select class="year-sel" id="yearSel"></select>
   </div>
 
-  <!-- Hero centre block: username → title → email+signout -->
+  <!-- Hero centre: username → title → email+signout -->
   <div class="header-center">
     <div class="hc-username" id="headerName">Welcome</div>
     <div class="hc-title">Daily Financial Tracker</div>
     <div class="hc-user-row" id="userPill" style="display:none">
       <div class="user-avatar" id="userAvatar">?</div>
-      <span class="user-email" id="userEmailDisplay"></span>
+      <div class="email-wrap">
+        <span class="user-email" id="userEmailDisplay"></span>
+        <button class="eye-btn" id="eyeBtn" onclick="toggleEmailMask()" title="Show / hide email">👁️</button>
+      </div>
       <div class="user-divider"></div>
       <button class="logout-btn" onclick="authLogout()">⏏ Sign out</button>
     </div>
@@ -1611,19 +1646,68 @@ init();
     } catch(err) { console.error('[Firebase] loadUserData error:', err); setStatus('offline'); }
   }
 
+  // ── EMAIL MASK ──
+  let _realEmail = '';
+  let _emailMasked = true;
+
+  function maskEmail(email) {
+    const [local, domain] = email.split('@');
+    if (!domain) return email;
+    const visible = local.charAt(0);
+    const masked  = '*'.repeat(Math.min(local.length - 1, 5));
+    return `${visible}${masked}@${domain}`;
+  }
+
+  window.toggleEmailMask = function() {
+    _emailMasked = !_emailMasked;
+    const el  = document.getElementById('userEmailDisplay');
+    const eye = document.getElementById('eyeBtn');
+    if (el)  el.textContent  = _emailMasked ? maskEmail(_realEmail) : _realEmail;
+    if (eye) eye.textContent = _emailMasked ? '👁️' : '🙈';
+  };
+
+  function setEmailDisplay(email) {
+    _realEmail   = email;
+    _emailMasked = true;
+    const el  = document.getElementById('userEmailDisplay');
+    const eye = document.getElementById('eyeBtn');
+    if (el)  el.textContent  = maskEmail(email);
+    if (eye) eye.textContent = '👁️';
+  }
+
+  // ── SCROLL-REACTIVE HEADER ──
+  (function() {
+    const hdr = document.getElementById('siteHeader');
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          if (window.scrollY > 48) {
+            hdr.classList.add('scrolled');
+          } else {
+            hdr.classList.remove('scrolled');
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }, { passive: true });
+  })();
+
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       document.getElementById('authScreen').classList.add('hidden');
       const displayName = user.displayName || user.email.split('@')[0];
       document.getElementById('headerName').textContent = displayName;
-      document.getElementById('userEmailDisplay').textContent = user.email;
+      setEmailDisplay(user.email);
       document.getElementById('userAvatar').textContent = displayName.charAt(0).toUpperCase();
       document.getElementById('userPill').style.display = 'flex';
       await loadUserData(user);
     } else {
       document.getElementById('authScreen').classList.remove('hidden');
       document.getElementById('userPill').style.display = 'none';
-      document.getElementById('headerName').textContent = "Your";
+      document.getElementById('headerName').textContent = 'Your';
+      _realEmail = ''; _emailMasked = true;
       currentUID = null;
       if (unsubscribe) { unsubscribe(); unsubscribe = null; }
       S.income = 0; S.incomeMap = {}; S.expenses = []; S.selectedDate = null;
