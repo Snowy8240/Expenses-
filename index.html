@@ -458,6 +458,54 @@
   .entry-amt { font-family: 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 600; flex-shrink: 0; }
   .entry-del { background: none; border: none; cursor: pointer; color: var(--text-soft); font-size: 0.82rem; padding: 0.22rem 0.32rem; border-radius: 5px; transition: all 0.14s; flex-shrink: 0; }
   .entry-del:hover { color: var(--red); background: var(--red-dim); }
+  .entry-edit { background: none; border: none; cursor: pointer; color: var(--text-soft); font-size: 0.82rem; padding: 0.22rem 0.32rem; border-radius: 5px; transition: all 0.14s; flex-shrink: 0; }
+  .entry-edit:hover { color: var(--blue-vivid); background: var(--blue-dim); }
+
+  /* ── EDIT MODAL ── */
+  .edit-modal-overlay {
+    position: fixed; inset: 0; z-index: 500;
+    background: rgba(0,0,0,0.45); backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center; padding: 1rem;
+    animation: fadeIn 0.18s ease;
+  }
+  .edit-modal-overlay.hidden { display: none; }
+  .edit-modal {
+    background: var(--bg-card); border-radius: 20px; padding: 1.8rem;
+    width: 100%; max-width: 480px;
+    border: 1px solid var(--blue-line);
+    box-shadow: 0 12px 48px rgba(0,0,0,0.18), 0 0 0 1px rgba(249,115,22,0.12);
+    animation: fadeIn 0.22s ease;
+  }
+  .edit-modal-title {
+    font-family: 'Space Grotesk', sans-serif; font-size: 1.05rem; font-weight: 700;
+    color: var(--text-main); margin-bottom: 1.2rem; display: flex; align-items: center; gap: 0.5rem;
+  }
+  .edit-cat-grid {
+    display: grid; grid-template-columns: repeat(6,1fr); gap: 0.4rem; margin-bottom: 1rem;
+  }
+  .edit-cat-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 0.22rem;
+    padding: 0.5rem 0.15rem; border: 1px solid var(--blue-line); border-radius: 10px;
+    cursor: pointer; background: var(--bg-raised); transition: all 0.15s;
+    font-family: 'Outfit', sans-serif; font-size: 0.6rem; font-weight: 500; color: var(--text-soft);
+  }
+  .edit-cat-btn:hover { border-color: var(--blue-vivid); background: var(--blue-dim); color: var(--blue-glow); }
+  .edit-cat-btn.active { background: linear-gradient(135deg,var(--blue-dim),rgba(249,115,22,0.22)); border-color: var(--blue-vivid); color: var(--blue-glow); box-shadow: 0 0 12px rgba(249,115,22,0.18); }
+  .edit-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .edit-fg { display: flex; flex-direction: column; gap: 0.28rem; }
+  .edit-fg.full { grid-column: 1 / -1; }
+  .edit-fg-lbl { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-soft); font-weight: 500; }
+  .edit-fg-inp {
+    background: var(--bg-raised); border: 1px solid var(--blue-line);
+    border-radius: 9px; padding: 0.58rem 0.8rem;
+    font-family: 'Outfit', sans-serif; font-size: 0.86rem; color: var(--text-main); outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s; width: 100%;
+  }
+  .edit-fg-inp:focus { border-color: var(--blue-vivid); box-shadow: 0 0 0 3px rgba(249,115,22,0.14); }
+  .edit-fg-inp::placeholder { color: var(--text-soft); }
+  .edit-fg-inp[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.4) sepia(1) saturate(3) hue-rotate(10deg); cursor: pointer; }
+  .edit-modal-actions { display: flex; gap: 0.6rem; margin-top: 1.1rem; }
+  @media(max-width:480px) { .edit-cat-grid { grid-template-columns: repeat(3,1fr); } .edit-form-grid { grid-template-columns: 1fr; } }
   .entry-more-btn {
     display: inline-block; margin-top: 0.2rem;
     color: #ea580c; font-size: 0.68rem; font-weight: 700;
@@ -899,6 +947,31 @@
   </div>
 </div>
 
+<!-- ── EDIT MODAL ── -->
+<div class="edit-modal-overlay hidden" id="editModalOverlay" onclick="closeEditModal(event)">
+  <div class="edit-modal" onclick="event.stopPropagation()">
+    <div class="edit-modal-title">✏️ Edit Entry</div>
+    <div class="edit-cat-grid" id="editCatGrid">
+      <button class="edit-cat-btn" data-cat="food"      onclick="editSelCat('food')">     <span style="font-size:1.1rem">🍽️</span>Food</button>
+      <button class="edit-cat-btn" data-cat="medicine"  onclick="editSelCat('medicine')"> <span style="font-size:1.1rem">💊</span>Medicine</button>
+      <button class="edit-cat-btn" data-cat="lifestyle" onclick="editSelCat('lifestyle')"><span style="font-size:1.1rem">✨</span>Lifestyle</button>
+      <button class="edit-cat-btn" data-cat="travel"    onclick="editSelCat('travel')">   <span style="font-size:1.1rem">🚌</span>Travel</button>
+      <button class="edit-cat-btn" data-cat="market"    onclick="editSelCat('market')">   <span style="font-size:1.1rem">🛒</span>Market</button>
+      <button class="edit-cat-btn" data-cat="other"     onclick="editSelCat('other')">    <span style="font-size:1.1rem">📦</span>Other</button>
+    </div>
+    <div class="edit-form-grid">
+      <div class="edit-fg full"><label class="edit-fg-lbl">Item / Description</label><input class="edit-fg-inp" id="editDesc" type="text" placeholder="e.g. Lunch, Medicine…"/></div>
+      <div class="edit-fg"><label class="edit-fg-lbl">Amount (₹)</label><input class="edit-fg-inp" id="editAmt" type="number" placeholder="0.00" min="0" step="0.01"/></div>
+      <div class="edit-fg"><label class="edit-fg-lbl">Date</label><input class="edit-fg-inp" id="editDate" type="date"/></div>
+      <div class="edit-fg full"><label class="edit-fg-lbl">Note (optional)</label><input class="edit-fg-inp" id="editNote" type="text" placeholder="Any note…"/></div>
+    </div>
+    <div class="edit-modal-actions">
+      <button class="btn btn-blue" onclick="saveEdit()" style="flex:1">💾 Save Changes</button>
+      <button class="btn btn-ghost" onclick="closeEditModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast-wrap" id="toastWrap"></div>
 
 <script>
@@ -958,6 +1031,7 @@ function init() {
   document.addEventListener('keydown', e=>{
     if(e.key==='Enter' && ['eDesc','eAmt','eNote'].includes(e.target.id)) addExp();
     if(e.key==='Enter' && ['fpName','fpPrice'].includes(e.target.id)) addFoodItem();
+    if(e.key==='Escape') { document.getElementById('editModalOverlay').classList.add('hidden'); _editId=null; _editCat=null; }
   });
 
   startClock();
@@ -1119,6 +1193,7 @@ function renderEntries() {
         <div class="entry-meta">${cat.label}${e.note ? ' · ' + esc(e.note) : ''} · ${sfd(e.date)}</div>
       </div>
       <div class="entry-amt" style="color:${cat.color};">${fmt(e.amount)}</div>
+      <button class="entry-edit" onclick="openEditModal('${e.id}')" title="Edit">✏️</button>
       <button class="entry-del" onclick="delEntry('${e.id}')" title="Delete">✕</button>
     `;
     list.appendChild(el);
@@ -1156,6 +1231,54 @@ function toggleEntryMore(id) {
 }
 function sfd(ds){ const d=new Date(ds+'T00:00:00'); return d.toLocaleDateString('en-IN',{day:'numeric',month:'short'}); }
 function delEntry(id){ S.expenses=S.expenses.filter(e=>e.id!==id); save(); renderAll(); toast('Entry deleted','err'); }
+
+// ── EDIT ENTRY ──
+let _editId = null;
+let _editCat = null;
+
+function openEditModal(id) {
+  const e = S.expenses.find(x => x.id === id);
+  if (!e) return;
+  _editId  = id;
+  _editCat = e.cat;
+  document.getElementById('editDesc').value  = e.desc  || '';
+  document.getElementById('editAmt').value   = e.amount;
+  document.getElementById('editDate').value  = e.date  || '';
+  document.getElementById('editNote').value  = e.note  || '';
+  // highlight active category
+  document.querySelectorAll('.edit-cat-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === _editCat));
+  document.getElementById('editModalOverlay').classList.remove('hidden');
+}
+
+function editSelCat(cat) {
+  _editCat = cat;
+  document.querySelectorAll('.edit-cat-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === cat));
+}
+
+function saveEdit() {
+  if (!_editId) return;
+  const desc = document.getElementById('editDesc').value.trim();
+  const amt  = parseFloat(document.getElementById('editAmt').value);
+  const date = document.getElementById('editDate').value;
+  const note = document.getElementById('editNote').value.trim();
+  if (!_editCat)          { toast('Select a category','err'); return; }
+  if (!date)              { toast('Select a date','err'); return; }
+  if (isNaN(amt)||amt<=0) { toast('Enter a valid amount','err'); return; }
+  const idx = S.expenses.findIndex(x => x.id === _editId);
+  if (idx === -1) return;
+  S.expenses[idx] = { ...S.expenses[idx], cat: _editCat, desc, amount: +amt.toFixed(2), date, note };
+  save(); renderAll();
+  toast(`${CATS[_editCat]?.icon||'📦'} Entry updated!`,'ok');
+  closeEditModal();
+  // push update to cloud if available
+  if (typeof pushToCloud === 'function' && window._currentUID) pushToCloud(window._currentUID);
+}
+
+function closeEditModal(event) {
+  if (event && event.target !== document.getElementById('editModalOverlay')) return;
+  document.getElementById('editModalOverlay').classList.add('hidden');
+  _editId = null; _editCat = null;
+}
 
 // ── BREAKDOWN ──
 function renderBk() {
@@ -1487,6 +1610,7 @@ init();
   const auth = getAuth(app);
 
   let currentUID  = null;
+  window._currentUID = null;
   let unsubscribe = null;
 
   function metaRef(uid)    { return doc(db, "users", uid, "data", "meta"); }
@@ -1590,6 +1714,7 @@ init();
   async function loadUserData(user) {
     const uid = user.uid;
     currentUID = uid;
+    window._currentUID = uid;
 
     S.income = 0; S.incomeMap = {}; S.expenses = []; S.selectedDate = null;
     S.filter = 'all'; S.cat = null; S.foodItems = []; S.journalEntries = [];
