@@ -602,6 +602,7 @@
   }
   .yr-cell:hover { border-color: rgba(74,222,128,0.4); background: var(--bg-hover); }
   .yr-cell.yr-current { border-color: var(--cyan); background: rgba(22,163,74,0.05); }
+  .yr-cell.yr-selected { border-color: var(--blue-vivid) !important; background: var(--blue-dim) !important; box-shadow: 0 0 0 2px rgba(249,115,22,0.25); }
   .yr-cell.yr-surplus .yr-bal { color: var(--green); }
   .yr-cell.yr-deficit .yr-bal { color: var(--red); }
   .yr-month { font-size: 0.65rem; font-weight: 600; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.25rem; }
@@ -618,6 +619,55 @@
   .yr-sum-box { background: var(--bg-raised); border-radius: 11px; padding: 0.8rem 1rem; border: 1px solid var(--blue-line); text-align: center; }
   .yr-sum-lbl { font-size: 0.62rem; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.3rem; }
   .yr-sum-val { font-family: 'Space Grotesk', sans-serif; font-size: 1.25rem; font-weight: 700; }
+
+  /* ── YEARLY MONTH BREAKDOWN PANEL ── */
+  .yr-breakdown {
+    margin-top: 1.2rem; border-top: 1px solid var(--blue-line);
+    padding-top: 1.2rem; display: none; animation: fadeIn 0.25s ease;
+  }
+  .yr-breakdown.open { display: block; }
+  .yrb-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem; }
+  .yrb-title { font-family: 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 0.4rem; }
+  .yrb-close { background: var(--bg-raised); border: 1px solid var(--blue-line); border-radius: 8px; padding: 0.3rem 0.65rem; font-size: 0.72rem; font-family: 'Outfit', sans-serif; font-weight: 600; color: var(--text-soft); cursor: pointer; transition: all 0.15s; }
+  .yrb-close:hover { border-color: var(--red); color: var(--red); background: var(--red-dim); }
+  .yrb-kpi { display: grid; grid-template-columns: repeat(4,1fr); gap: 0.6rem; margin-bottom: 1rem; }
+  .yrb-kpi-box { background: var(--bg-raised); border-radius: 12px; padding: 0.75rem 0.9rem; border: 1px solid var(--blue-line); position: relative; overflow: hidden; }
+  .yrb-kpi-box::before { content:''; position:absolute; inset:0; opacity:0.05; pointer-events:none; border-radius:12px; }
+  .yrb-kpi-box.kpi-income::before { background: var(--green); }
+  .yrb-kpi-box.kpi-spent::before  { background: var(--red); }
+  .yrb-kpi-box.kpi-bal::before    { background: var(--blue-vivid); }
+  .yrb-kpi-box.kpi-days::before   { background: var(--market); }
+  .yrb-kpi-lbl { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-soft); margin-bottom: 0.22rem; font-weight: 500; }
+  .yrb-kpi-val { font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; font-weight: 700; line-height: 1.1; }
+  .yrb-kpi-sub { font-size: 0.6rem; color: var(--text-soft); margin-top: 0.15rem; }
+  .yrb-body { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .yrb-section-title { font-size: 0.63rem; font-weight: 600; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.65rem; display: flex; align-items: center; gap: 0.4rem; }
+  .yrb-section-title::after { content:''; flex:1; height:1px; background:var(--blue-line); }
+  .yrb-cat-row { display: flex; flex-direction: column; gap: 0.48rem; }
+  .yrb-cat-item { display: flex; flex-direction: column; gap: 0.18rem; }
+  .yrb-cat-top { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+  .yrb-cat-lbl { font-size: 0.72rem; color: var(--text-mid); display: flex; align-items: center; gap: 0.28rem; flex: 1; min-width: 0; }
+  .yrb-cat-pct { font-size: 0.65rem; color: var(--text-soft); flex-shrink: 0; }
+  .yrb-cat-amt { font-family: 'Space Grotesk', sans-serif; font-size: 0.78rem; font-weight: 600; flex-shrink: 0; }
+  .yrb-cat-track { height: 5px; background: var(--bg-deep); border-radius: 3px; overflow: hidden; border: 1px solid var(--blue-line); }
+  .yrb-cat-fill { height: 100%; border-radius: 3px; transition: width 0.7s cubic-bezier(0.4,0,0.2,1); }
+  .yrb-top-list { display: flex; flex-direction: column; gap: 0.38rem; }
+  .yrb-top-item { display: flex; align-items: center; gap: 0.55rem; padding: 0.48rem 0.65rem; background: var(--bg-raised); border-radius: 9px; border: 1px solid var(--blue-line); transition: all 0.13s; }
+  .yrb-top-item:hover { border-color: rgba(249,115,22,0.3); background: var(--bg-hover); }
+  .yrb-top-rank { font-size: 0.6rem; font-weight: 700; color: var(--text-soft); min-width: 14px; text-align: center; }
+  .yrb-top-badge { width: 26px; height: 26px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 0.82rem; flex-shrink: 0; }
+  .yrb-top-info { flex: 1; min-width: 0; }
+  .yrb-top-name { font-size: 0.75rem; font-weight: 500; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .yrb-top-date { font-size: 0.6rem; color: var(--text-soft); }
+  .yrb-top-amt { font-family: 'Space Grotesk', sans-serif; font-size: 0.82rem; font-weight: 700; flex-shrink: 0; }
+  .yrb-spark-wrap { margin-top: 0.6rem; }
+  .yrb-spark-canvas { width: 100%; height: 56px; display: block; }
+  .yrb-spark-axis { display: flex; justify-content: space-between; margin-top: 0.2rem; }
+  .yrb-spark-axis span { font-size: 0.55rem; color: var(--text-soft); }
+  .yrb-chips { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px solid var(--blue-line); }
+  .yrb-chip { display: flex; align-items: center; gap: 0.35rem; background: var(--bg-raised); border: 1px solid var(--blue-line); border-radius: 20px; padding: 0.3rem 0.7rem; font-size: 0.68rem; color: var(--text-mid); font-weight: 500; }
+  .yrb-chip-icon { font-size: 0.85rem; }
+  @media(max-width:700px){ .yrb-kpi{grid-template-columns:repeat(2,1fr)} .yrb-body{grid-template-columns:1fr} }
 
   @media(max-width:920px) {
     .app{grid-template-columns:1fr}
@@ -915,6 +965,56 @@
           <div class="yr-sum-lbl">Net Savings</div>
           <div class="yr-sum-val" id="yrNetSavings">₹0</div>
         </div>
+      </div>
+
+      <!-- Month Breakdown Panel (shown on cell click) -->
+      <div class="yr-breakdown" id="yrBreakdown">
+        <div class="yrb-header">
+          <div class="yrb-title">📊 <span id="yrbMonthTitle">Month Breakdown</span></div>
+          <button class="yrb-close" onclick="closeYrBreakdown()">✕ Close</button>
+        </div>
+        <!-- KPI row -->
+        <div class="yrb-kpi">
+          <div class="yrb-kpi-box kpi-income">
+            <div class="yrb-kpi-lbl">Income</div>
+            <div class="yrb-kpi-val" id="yrbIncome">₹0</div>
+            <div class="yrb-kpi-sub" id="yrbIncomeSub">—</div>
+          </div>
+          <div class="yrb-kpi-box kpi-spent">
+            <div class="yrb-kpi-lbl">Total Spent</div>
+            <div class="yrb-kpi-val" id="yrbSpent">₹0</div>
+            <div class="yrb-kpi-sub" id="yrbSpentSub">—</div>
+          </div>
+          <div class="yrb-kpi-box kpi-bal">
+            <div class="yrb-kpi-lbl">Balance</div>
+            <div class="yrb-kpi-val" id="yrbBal">₹0</div>
+            <div class="yrb-kpi-sub" id="yrbBalSub">—</div>
+          </div>
+          <div class="yrb-kpi-box kpi-days">
+            <div class="yrb-kpi-lbl">Active Days</div>
+            <div class="yrb-kpi-val" id="yrbDays">0</div>
+            <div class="yrb-kpi-sub" id="yrbDaysSub">days with expense</div>
+          </div>
+        </div>
+        <!-- Body: category breakdown + top expenses -->
+        <div class="yrb-body">
+          <div>
+            <div class="yrb-section-title">Category Breakdown</div>
+            <div class="yrb-cat-row" id="yrbCatRow"></div>
+            <!-- Sparkline -->
+            <div class="yrb-spark-wrap">
+              <div class="yrb-section-title" style="margin-top:0.8rem">Daily Spending</div>
+              <canvas class="yrb-spark-canvas" id="yrbSparkCanvas"></canvas>
+              <div class="yrb-spark-axis" id="yrbSparkAxis"></div>
+            </div>
+          </div>
+          <div>
+            <div class="yrb-section-title">Top Expenses</div>
+            <div class="yrb-top-list" id="yrbTopList"></div>
+          </div>
+        </div>
+        <!-- Insight chips -->
+        <div class="yrb-chips" id="yrbChips"></div>
       </div>
     </div>
     </div><!-- end panel-yearly -->
@@ -1470,6 +1570,10 @@ function renderYearly() {
       S.calMonth = m;
       document.getElementById('yearSel').value = yr;
       renderCal(); renderIncome(); renderBk(); renderYearly(); save();
+      // highlight selected cell
+      document.querySelectorAll('.yr-cell').forEach(c => c.classList.remove('yr-selected'));
+      cell.classList.add('yr-selected');
+      renderYrBreakdown(yr, m);
     });
     grid.appendChild(cell);
   });
@@ -1480,6 +1584,150 @@ function renderYearly() {
   const nsEl = document.getElementById('yrNetSavings');
   nsEl.textContent = (netSavings>=0?'+':'')+fmt(netSavings);
   nsEl.style.color = netSavings >= 0 ? 'var(--green)' : 'var(--red)';
+}
+
+function closeYrBreakdown() {
+  document.getElementById('yrBreakdown').classList.remove('open');
+  document.querySelectorAll('.yr-cell').forEach(c => c.classList.remove('yr-selected'));
+}
+
+function renderYrBreakdown(yr, m) {
+  const panel = document.getElementById('yrBreakdown');
+  panel.classList.add('open');
+
+  const monthName = MONTHS[m] + ' ' + yr;
+  document.getElementById('yrbMonthTitle').textContent = monthName;
+
+  const income = getMonthIncome(yr, m);
+  const exps = S.expenses.filter(e => {
+    const d = new Date(e.date + 'T00:00:00');
+    return d.getFullYear() === yr && d.getMonth() === m;
+  });
+  const spent = exps.reduce((s,e) => s + e.amount, 0);
+  const balance = income - spent;
+  const activeDays = new Set(exps.map(e => e.date)).size;
+  const daysInMonth = new Date(yr, m+1, 0).getDate();
+  const dailyAvg = activeDays > 0 ? spent / activeDays : 0;
+  const savingsRate = income > 0 ? ((balance / income) * 100) : null;
+
+  // KPI boxes
+  document.getElementById('yrbIncome').textContent = income > 0 ? fmt(income) : '—';
+  document.getElementById('yrbIncomeSub').textContent = income > 0 ? 'set for this month' : 'no income set';
+  document.getElementById('yrbSpent').textContent = fmt(spent);
+  document.getElementById('yrbSpentSub').textContent = `avg ${fmt(dailyAvg)}/day`;
+  const balEl = document.getElementById('yrbBal');
+  balEl.textContent = income > 0 ? (balance >= 0 ? '+' : '') + fmt(balance) : '—';
+  balEl.style.color = balance >= 0 ? 'var(--green)' : 'var(--red)';
+  document.getElementById('yrbBalSub').textContent = savingsRate !== null ? `${savingsRate.toFixed(1)}% saved` : 'set income to see';
+  document.getElementById('yrbDays').textContent = activeDays;
+  document.getElementById('yrbDaysSub').textContent = `out of ${daysInMonth} days`;
+
+  // Category breakdown
+  const catRow = document.getElementById('yrbCatRow');
+  catRow.innerHTML = '';
+  const catTotals = Object.entries(CATS).map(([k, cat]) => ({
+    k, cat, sum: exps.filter(e => e.cat === k).reduce((s,e) => s + e.amount, 0)
+  })).filter(x => x.sum > 0).sort((a,b) => b.sum - a.sum);
+
+  catTotals.forEach(({k, cat, sum}) => {
+    const pct = spent > 0 ? (sum / spent * 100) : 0;
+    const item = document.createElement('div');
+    item.className = 'yrb-cat-item';
+    item.innerHTML = `
+      <div class="yrb-cat-top">
+        <span class="yrb-cat-lbl">${cat.icon} ${cat.label}</span>
+        <span class="yrb-cat-pct">${pct.toFixed(1)}%</span>
+        <span class="yrb-cat-amt" style="color:${cat.color}">${fmt(sum)}</span>
+      </div>
+      <div class="yrb-cat-track">
+        <div class="yrb-cat-fill" style="width:${pct}%;background:${cat.color}"></div>
+      </div>`;
+    catRow.appendChild(item);
+  });
+  if (!catTotals.length) catRow.innerHTML = '<div style="font-size:0.78rem;color:var(--text-soft);font-style:italic;padding:0.5rem 0">No expenses this month</div>';
+
+  // Top 5 expenses
+  const topList = document.getElementById('yrbTopList');
+  topList.innerHTML = '';
+  const sorted = [...exps].sort((a,b) => b.amount - a.amount).slice(0, 5);
+  if (!sorted.length) {
+    topList.innerHTML = '<div style="font-size:0.78rem;color:var(--text-soft);font-style:italic;padding:0.5rem 0">No expenses this month</div>';
+  } else {
+    sorted.forEach((e, i) => {
+      const cat = CATS[e.cat] || CATS.other;
+      const item = document.createElement('div');
+      item.className = 'yrb-top-item';
+      const medals = ['🥇','🥈','🥉','4️⃣','5️⃣'];
+      item.innerHTML = `
+        <span class="yrb-top-rank">${medals[i]||i+1}</span>
+        <div class="yrb-top-badge" style="background:${cat.bg};border:1px solid ${cat.border}">${cat.icon}</div>
+        <div class="yrb-top-info">
+          <div class="yrb-top-name">${esc(e.desc) || cat.label}</div>
+          <div class="yrb-top-date">${sfd(e.date)} · ${cat.label}</div>
+        </div>
+        <span class="yrb-top-amt" style="color:${cat.color}">${fmt(e.amount)}</span>`;
+      topList.appendChild(item);
+    });
+  }
+
+  // Daily sparkline (canvas)
+  const canvas = document.getElementById('yrbSparkCanvas');
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.offsetWidth || 300;
+  const H = 56;
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  // build daily totals
+  const dailyTotals = Array.from({length: daysInMonth}, (_, i) => {
+    const ds = `${yr}-${p2(m+1)}-${p2(i+1)}`;
+    return exps.filter(e => e.date === ds).reduce((s,e) => s + e.amount, 0);
+  });
+  const maxDay = Math.max(...dailyTotals, 1);
+
+  ctx.clearRect(0, 0, W, H);
+  const pad = { l:4, r:4, t:6, b:4 };
+  const chartW = W - pad.l - pad.r;
+  const chartH = H - pad.t - pad.b;
+  const barW = Math.max(1, chartW / daysInMonth - 1.5);
+
+  dailyTotals.forEach((val, i) => {
+    if (val <= 0) return;
+    const x = pad.l + (i / daysInMonth) * chartW;
+    const barH = (val / maxDay) * chartH;
+    const y = pad.t + chartH - barH;
+    const alpha = val === maxDay ? 1 : 0.55 + (val/maxDay)*0.45;
+    ctx.fillStyle = val === maxDay ? '#f97316' : `rgba(249,115,22,${alpha})`;
+    ctx.beginPath();
+    ctx.roundRect ? ctx.roundRect(x, y, barW, barH, 2) : ctx.rect(x, y, barW, barH);
+    ctx.fill();
+  });
+
+  // Axis labels (first, mid, last day)
+  const axisEl = document.getElementById('yrbSparkAxis');
+  axisEl.innerHTML = `<span>1</span><span>${Math.ceil(daysInMonth/2)}</span><span>${daysInMonth}</span>`;
+
+  // Insight chips
+  const chips = document.getElementById('yrbChips');
+  chips.innerHTML = '';
+  const addChip = (icon, text) => {
+    chips.innerHTML += `<div class="yrb-chip"><span class="yrb-chip-icon">${icon}</span>${text}</div>`;
+  };
+  if (dailyAvg > 0) addChip('📊', `Daily avg: ${fmt(dailyAvg)}`);
+  if (activeDays > 0) addChip('📅', `${activeDays}/${daysInMonth} days active`);
+  const topCat = catTotals[0];
+  if (topCat) addChip('🏆', `Top: ${topCat.cat.label} (${(topCat.sum/spent*100).toFixed(0)}%)`);
+  if (savingsRate !== null) {
+    const emoji = savingsRate >= 20 ? '🌟' : savingsRate >= 0 ? '👍' : '⚠️';
+    addChip(emoji, `Savings rate: ${savingsRate.toFixed(1)}%`);
+  }
+  const txCount = exps.length;
+  if (txCount > 0) addChip('🧾', `${txCount} transaction${txCount!==1?'s':''}`);
+
+  // scroll breakdown into view smoothly
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 // ── TOAST ──
