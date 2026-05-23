@@ -592,82 +592,95 @@
 
   /* ── YEARLY OVERVIEW ── */
   .yearly-card { border-top: 2px solid var(--cyan); }
-  .yr-grid { display: grid; grid-template-columns: repeat(6,1fr); gap: 0.55rem; }
-  @media(max-width:1100px) { .yr-grid { grid-template-columns: repeat(4,1fr); } }
-  @media(max-width:700px) { .yr-grid { grid-template-columns: repeat(3,1fr); } }
+  /* yr-grid: constrained inside card, min-width:0 on cells prevents blowout */
+  .yr-grid { display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); gap: 0.55rem; width: 100%; box-sizing: border-box; }
+  @media(max-width:1100px) { .yr-grid { grid-template-columns: repeat(4,minmax(0,1fr)); } }
+  @media(max-width:700px)  { .yr-grid { grid-template-columns: repeat(3,minmax(0,1fr)); } }
   .yr-cell {
-    background: var(--bg-raised); border-radius: 11px; padding: 0.7rem 0.65rem;
+    background: var(--bg-raised); border-radius: 11px; padding: 0.7rem 0.5rem;
     border: 1px solid var(--blue-line); transition: all 0.17s; cursor: pointer;
-    text-align: center;
+    text-align: center; min-width: 0; box-sizing: border-box; overflow: hidden;
   }
   .yr-cell:hover { border-color: rgba(74,222,128,0.4); background: var(--bg-hover); }
   .yr-cell.yr-current { border-color: var(--cyan); background: rgba(22,163,74,0.05); }
   .yr-cell.yr-selected { border-color: var(--blue-vivid) !important; background: var(--blue-dim) !important; box-shadow: 0 0 0 2px rgba(249,115,22,0.25); }
   .yr-cell.yr-surplus .yr-bal { color: var(--green); }
   .yr-cell.yr-deficit .yr-bal { color: var(--red); }
-  .yr-month { font-size: 0.65rem; font-weight: 600; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.25rem; }
-  .yr-income { font-size: 0.68rem; color: var(--green); margin-bottom: 0.1rem; }
-  .yr-spent { font-size: 0.68rem; color: var(--red); margin-bottom: 0.22rem; }
-  .yr-bal { font-family: 'Space Grotesk', sans-serif; font-size: 0.9rem; font-weight: 700; }
-  .yr-bar-wrap { height: 4px; background: var(--bg-deep); border-radius: 2px; overflow: hidden; margin-top: 0.35rem; }
+  .yr-month { font-size: 0.62rem; font-weight: 600; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.22rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .yr-income { font-size: 0.64rem; color: var(--green); margin-bottom: 0.08rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .yr-spent  { font-size: 0.64rem; color: var(--red);   margin-bottom: 0.18rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .yr-bal    { font-family: 'Space Grotesk', sans-serif; font-size: 0.82rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .yr-bar-wrap { height: 4px; background: var(--bg-deep); border-radius: 2px; overflow: hidden; margin-top: 0.3rem; }
   .yr-bar { height: 100%; border-radius: 2px; transition: width 0.6s ease; }
 
-  .yr-summary {
-    display: grid; grid-template-columns: repeat(3,1fr); gap: 0.65rem; margin-top: 1rem;
-    padding-top: 1rem; border-top: 1px solid var(--blue-line);
-  }
-  .yr-sum-box { background: var(--bg-raised); border-radius: 11px; padding: 0.8rem 1rem; border: 1px solid var(--blue-line); text-align: center; }
+  .yr-summary { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 0.65rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--blue-line); width: 100%; box-sizing: border-box; }
+  .yr-sum-box { background: var(--bg-raised); border-radius: 11px; padding: 0.8rem 1rem; border: 1px solid var(--blue-line); text-align: center; box-sizing: border-box; }
   .yr-sum-lbl { font-size: 0.62rem; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.3rem; }
   .yr-sum-val { font-family: 'Space Grotesk', sans-serif; font-size: 1.25rem; font-weight: 700; }
 
-  /* ── YEARLY MONTH BREAKDOWN PANEL ── */
-  .yr-breakdown {
-    margin-top: 1.2rem; border-top: 1px solid var(--blue-line);
-    padding-top: 1.2rem; display: none; animation: fadeIn 0.25s ease;
-  }
-  .yr-breakdown.open { display: block; }
-  .yrb-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem; }
-  .yrb-title { font-family: 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 0.4rem; }
-  .yrb-close { background: var(--bg-raised); border: 1px solid var(--blue-line); border-radius: 8px; padding: 0.3rem 0.65rem; font-size: 0.72rem; font-family: 'Outfit', sans-serif; font-weight: 600; color: var(--text-soft); cursor: pointer; transition: all 0.15s; }
+  /* ── MONTH BREAKDOWN CARD ── */
+  /* Sibling card, hidden until a month cell is clicked */
+  .yr-breakdown { display: none; flex-direction: column; border-top: 2px solid var(--blue-vivid); width: 100%; box-sizing: border-box; }
+  .yr-breakdown.open { display: flex; animation: fadeIn 0.25s ease; }
+
+  .yrb-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; gap: 0.5rem; width: 100%; flex-wrap: wrap; }
+  .yrb-close { background: var(--bg-raised); border: 1px solid var(--blue-line); border-radius: 8px; padding: 0.28rem 0.65rem; font-size: 0.7rem; font-family: 'Outfit',sans-serif; font-weight: 600; color: var(--text-soft); cursor: pointer; transition: all 0.15s; flex-shrink: 0; }
   .yrb-close:hover { border-color: var(--red); color: var(--red); background: var(--red-dim); }
-  .yrb-kpi { display: grid; grid-template-columns: repeat(4,1fr); gap: 0.6rem; margin-bottom: 1rem; }
-  .yrb-kpi-box { background: var(--bg-raised); border-radius: 12px; padding: 0.75rem 0.9rem; border: 1px solid var(--blue-line); position: relative; overflow: hidden; }
-  .yrb-kpi-box::before { content:''; position:absolute; inset:0; opacity:0.05; pointer-events:none; border-radius:12px; }
+
+  /* 4-col KPI row — minmax(0,1fr) stops content blowout */
+  .yrb-kpi { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 0.6rem; margin-bottom: 1rem; width: 100%; box-sizing: border-box; }
+  .yrb-kpi-box { background: var(--bg-raised); border-radius: 10px; padding: 0.7rem 0.8rem; border: 1px solid var(--blue-line); position: relative; overflow: hidden; min-width: 0; box-sizing: border-box; }
+  .yrb-kpi-box::before { content:''; position:absolute; inset:0; opacity:0.05; pointer-events:none; }
   .yrb-kpi-box.kpi-income::before { background: var(--green); }
   .yrb-kpi-box.kpi-spent::before  { background: var(--red); }
   .yrb-kpi-box.kpi-bal::before    { background: var(--blue-vivid); }
   .yrb-kpi-box.kpi-days::before   { background: var(--market); }
-  .yrb-kpi-lbl { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-soft); margin-bottom: 0.22rem; font-weight: 500; }
-  .yrb-kpi-val { font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; font-weight: 700; line-height: 1.1; }
-  .yrb-kpi-sub { font-size: 0.6rem; color: var(--text-soft); margin-top: 0.15rem; }
-  .yrb-body { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-  .yrb-section-title { font-size: 0.63rem; font-weight: 600; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.65rem; display: flex; align-items: center; gap: 0.4rem; }
-  .yrb-section-title::after { content:''; flex:1; height:1px; background:var(--blue-line); }
-  .yrb-cat-row { display: flex; flex-direction: column; gap: 0.48rem; }
-  .yrb-cat-item { display: flex; flex-direction: column; gap: 0.18rem; }
-  .yrb-cat-top { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
-  .yrb-cat-lbl { font-size: 0.72rem; color: var(--text-mid); display: flex; align-items: center; gap: 0.28rem; flex: 1; min-width: 0; }
-  .yrb-cat-pct { font-size: 0.65rem; color: var(--text-soft); flex-shrink: 0; }
-  .yrb-cat-amt { font-family: 'Space Grotesk', sans-serif; font-size: 0.78rem; font-weight: 600; flex-shrink: 0; }
-  .yrb-cat-track { height: 5px; background: var(--bg-deep); border-radius: 3px; overflow: hidden; border: 1px solid var(--blue-line); }
-  .yrb-cat-fill { height: 100%; border-radius: 3px; transition: width 0.7s cubic-bezier(0.4,0,0.2,1); }
-  .yrb-top-list { display: flex; flex-direction: column; gap: 0.38rem; }
-  .yrb-top-item { display: flex; align-items: center; gap: 0.55rem; padding: 0.48rem 0.65rem; background: var(--bg-raised); border-radius: 9px; border: 1px solid var(--blue-line); transition: all 0.13s; }
-  .yrb-top-item:hover { border-color: rgba(249,115,22,0.3); background: var(--bg-hover); }
-  .yrb-top-rank { font-size: 0.6rem; font-weight: 700; color: var(--text-soft); min-width: 14px; text-align: center; }
-  .yrb-top-badge { width: 26px; height: 26px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 0.82rem; flex-shrink: 0; }
-  .yrb-top-info { flex: 1; min-width: 0; }
-  .yrb-top-name { font-size: 0.75rem; font-weight: 500; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .yrb-top-date { font-size: 0.6rem; color: var(--text-soft); }
-  .yrb-top-amt { font-family: 'Space Grotesk', sans-serif; font-size: 0.82rem; font-weight: 700; flex-shrink: 0; }
-  .yrb-spark-wrap { margin-top: 0.6rem; }
-  .yrb-spark-canvas { width: 100%; height: 56px; display: block; }
+  .yrb-kpi-lbl { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.09em; color: var(--text-soft); margin-bottom: 0.2rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .yrb-kpi-val { font-family: 'Space Grotesk',sans-serif; font-size: 1.05rem; font-weight: 700; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .yrb-kpi-sub { font-size: 0.58rem; color: var(--text-soft); margin-top: 0.15rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* 2-col body — minmax(0,1fr) on each column */
+  .yrb-body { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 1rem; width: 100%; box-sizing: border-box; margin-bottom: 0; }
+  .yrb-col { min-width: 0; display: flex; flex-direction: column; gap: 0; }
+
+  .yrb-section-title { font-size: 0.6rem; font-weight: 600; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.4rem; white-space: nowrap; }
+  .yrb-section-title::after { content:''; flex:1; height:1px; background:var(--blue-line); min-width: 0; }
+
+  /* Category bars */
+  .yrb-cat-row { display: flex; flex-direction: column; gap: 0.48rem; width: 100%; }
+  .yrb-cat-item { display: flex; flex-direction: column; gap: 0.16rem; min-width: 0; }
+  .yrb-cat-top { display: flex; align-items: center; gap: 0.35rem; min-width: 0; }
+  .yrb-cat-lbl { font-size: 0.7rem; color: var(--text-mid); display: flex; align-items: center; gap: 0.25rem; flex: 1; min-width: 0; overflow: hidden; }
+  .yrb-cat-lbl span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .yrb-cat-pct { font-size: 0.62rem; color: var(--text-soft); flex-shrink: 0; }
+  .yrb-cat-amt { font-family: 'Space Grotesk',sans-serif; font-size: 0.76rem; font-weight: 600; flex-shrink: 0; white-space: nowrap; }
+  .yrb-cat-track { height: 5px; background: var(--bg-deep); border-radius: 3px; overflow: hidden; width: 100%; }
+  .yrb-cat-fill { height: 100%; border-radius: 3px; transition: width 0.7s cubic-bezier(0.4,0,0.2,1); min-width: 2px; }
+
+  /* Daily sparkline */
+  .yrb-spark-wrap { margin-top: 0.85rem; min-width: 0; width: 100%; }
+  .yrb-spark-canvas { width: 100%; height: 52px; display: block; border-radius: 6px; background: var(--bg-raised); border: 1px solid var(--blue-line); box-sizing: border-box; }
   .yrb-spark-axis { display: flex; justify-content: space-between; margin-top: 0.2rem; }
   .yrb-spark-axis span { font-size: 0.55rem; color: var(--text-soft); }
-  .yrb-chips { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px solid var(--blue-line); }
-  .yrb-chip { display: flex; align-items: center; gap: 0.35rem; background: var(--bg-raised); border: 1px solid var(--blue-line); border-radius: 20px; padding: 0.3rem 0.7rem; font-size: 0.68rem; color: var(--text-mid); font-weight: 500; }
-  .yrb-chip-icon { font-size: 0.85rem; }
-  @media(max-width:700px){ .yrb-kpi{grid-template-columns:repeat(2,1fr)} .yrb-body{grid-template-columns:1fr} }
+
+  /* Top expenses list — mirrors entry-item */
+  .yrb-top-list { display: flex; flex-direction: column; gap: 0.38rem; width: 100%; }
+  .yrb-top-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.48rem 0.65rem; background: var(--bg-raised); border-radius: 10px; border: 1px solid var(--blue-line); transition: all 0.13s; min-width: 0; box-sizing: border-box; width: 100%; }
+  .yrb-top-item:hover { border-color: rgba(249,115,22,0.3); background: var(--bg-hover); }
+  .yrb-top-rank { font-size: 0.65rem; font-weight: 700; color: var(--text-soft); width: 16px; text-align: center; flex-shrink: 0; }
+  .yrb-top-badge { width: 26px; height: 26px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+  .yrb-top-info { flex: 1; min-width: 0; }
+  .yrb-top-name { font-size: 0.74rem; font-weight: 500; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .yrb-top-date { font-size: 0.6rem; color: var(--text-soft); margin-top: 0.04rem; }
+  .yrb-top-amt { font-family: 'Space Grotesk',sans-serif; font-size: 0.82rem; font-weight: 700; flex-shrink: 0; white-space: nowrap; }
+
+  /* Insight chips */
+  .yrb-chips { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.85rem; padding-top: 0.85rem; border-top: 1px solid var(--blue-line); width: 100%; box-sizing: border-box; }
+  .yrb-chip { display: flex; align-items: center; gap: 0.3rem; background: var(--bg-raised); border: 1px solid var(--blue-line); border-radius: 20px; padding: 0.26rem 0.6rem; font-size: 0.65rem; color: var(--text-mid); font-weight: 500; white-space: nowrap; }
+  .yrb-chip-icon { font-size: 0.8rem; }
+
+  @media(max-width:900px) { .yrb-kpi { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+  @media(max-width:650px) { .yrb-body { grid-template-columns: minmax(0,1fr); } }
 
   @media(max-width:920px) {
     .app{grid-template-columns:1fr}
@@ -948,32 +961,33 @@
 
     <!-- TAB: YEARLY -->
     <div class="tab-panel" id="panel-yearly">
-    <!-- YEARLY OVERVIEW -->
-    <div class="card yearly-card">
-      <div class="card-title"><span class="ct-bar" style="background:linear-gradient(90deg,var(--cyan),var(--blue-vivid))"></span>📅 Yearly Overview — <span id="yearlyYearLbl" style="color:var(--cyan);margin-left:0.2rem"></span></div>
-      <div class="yr-grid" id="yrGrid"></div>
-      <div class="yr-summary">
-        <div class="yr-sum-box">
-          <div class="yr-sum-lbl">Total Income</div>
-          <div class="yr-sum-val" style="color:var(--green)" id="yrTotalIncome">₹0</div>
-        </div>
-        <div class="yr-sum-box">
-          <div class="yr-sum-lbl">Total Spent</div>
-          <div class="yr-sum-val" style="color:var(--red)" id="yrTotalSpent">₹0</div>
-        </div>
-        <div class="yr-sum-box">
-          <div class="yr-sum-lbl">Net Savings</div>
-          <div class="yr-sum-val" id="yrNetSavings">₹0</div>
+
+      <!-- Yearly overview card -->
+      <div class="card yearly-card">
+        <div class="card-title"><span class="ct-bar" style="background:linear-gradient(90deg,var(--cyan),var(--blue-vivid))"></span>📅 Yearly Overview — <span id="yearlyYearLbl" style="color:var(--cyan);margin-left:0.2rem"></span></div>
+        <div class="yr-grid" id="yrGrid"></div>
+        <div class="yr-summary">
+          <div class="yr-sum-box">
+            <div class="yr-sum-lbl">Total Income</div>
+            <div class="yr-sum-val" style="color:var(--green)" id="yrTotalIncome">₹0</div>
+          </div>
+          <div class="yr-sum-box">
+            <div class="yr-sum-lbl">Total Spent</div>
+            <div class="yr-sum-val" style="color:var(--red)" id="yrTotalSpent">₹0</div>
+          </div>
+          <div class="yr-sum-box">
+            <div class="yr-sum-lbl">Net Savings</div>
+            <div class="yr-sum-val" id="yrNetSavings">₹0</div>
+          </div>
         </div>
       </div>
 
-      <!-- Month Breakdown Panel (shown on cell click) -->
-      <div class="yr-breakdown" id="yrBreakdown">
+      <!-- Month Breakdown — separate card, hidden until month clicked -->
+      <div class="card yr-breakdown" id="yrBreakdown">
         <div class="yrb-header">
-          <div class="yrb-title">📊 <span id="yrbMonthTitle">Month Breakdown</span></div>
+          <div class="card-title" style="margin-bottom:0"><span class="ct-bar" style="background:linear-gradient(90deg,var(--blue-vivid),var(--cyan))"></span>📊 <span id="yrbMonthTitle">Month Breakdown</span></div>
           <button class="yrb-close" onclick="closeYrBreakdown()">✕ Close</button>
         </div>
-        <!-- KPI row -->
         <div class="yrb-kpi">
           <div class="yrb-kpi-box kpi-income">
             <div class="yrb-kpi-lbl">Income</div>
@@ -996,27 +1010,24 @@
             <div class="yrb-kpi-sub" id="yrbDaysSub">days with expense</div>
           </div>
         </div>
-        <!-- Body: category breakdown + top expenses -->
         <div class="yrb-body">
-          <div>
+          <div class="yrb-col">
             <div class="yrb-section-title">Category Breakdown</div>
             <div class="yrb-cat-row" id="yrbCatRow"></div>
-            <!-- Sparkline -->
             <div class="yrb-spark-wrap">
-              <div class="yrb-section-title" style="margin-top:0.8rem">Daily Spending</div>
+              <div class="yrb-section-title" style="margin-top:0.85rem">Daily Spending</div>
               <canvas class="yrb-spark-canvas" id="yrbSparkCanvas"></canvas>
               <div class="yrb-spark-axis" id="yrbSparkAxis"></div>
             </div>
           </div>
-          <div>
+          <div class="yrb-col">
             <div class="yrb-section-title">Top Expenses</div>
             <div class="yrb-top-list" id="yrbTopList"></div>
           </div>
         </div>
-        <!-- Insight chips -->
         <div class="yrb-chips" id="yrbChips"></div>
       </div>
-    </div>
+
     </div><!-- end panel-yearly -->
 
     <!-- TAB: JOURNAL -->
@@ -1635,7 +1646,7 @@ function renderYrBreakdown(yr, m) {
     item.className = 'yrb-cat-item';
     item.innerHTML = `
       <div class="yrb-cat-top">
-        <span class="yrb-cat-lbl">${cat.icon} ${cat.label}</span>
+        <span class="yrb-cat-lbl">${cat.icon} <span>${cat.label}</span></span>
         <span class="yrb-cat-pct">${pct.toFixed(1)}%</span>
         <span class="yrb-cat-amt" style="color:${cat.color}">${fmt(sum)}</span>
       </div>
